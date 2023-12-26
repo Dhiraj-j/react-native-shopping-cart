@@ -1,15 +1,17 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import React from 'react';
-import {SCREEN_HEIGHT} from './src/theme/Screen';
 import {NavigationContainer} from '@react-navigation/native';
 import RouteNavigation from './src/navigations/RouteNavigation';
-import BottomTabs from './src/navigations/BottomTabs';
+import {Provider} from 'react-redux';
+import {store} from './src/store/store';
 
 const App = () => {
   return (
     <NavigationContainer>
-      <StatusBar hidden />
-      <RouteNavigation />
+      <Provider store={store}>
+        <StatusBar hidden />
+        <RouteNavigation />
+      </Provider>
     </NavigationContainer>
   );
 };
