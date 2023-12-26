@@ -16,7 +16,7 @@ type Props = {
   style?: any;
   textStyle?: any;
   containerStyle?: object;
-  mode: 'outline' | 'fill';
+  mode?: 'outline' | 'fill';
 };
 
 const Button = ({

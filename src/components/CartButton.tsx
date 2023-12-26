@@ -3,14 +3,17 @@ import React from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {COLORS} from '../theme/Colors';
 import {useNavigation} from '@react-navigation/native';
+import {useAppSelector} from '../store/hooks';
+import {cartSelector} from '../store/cartSlice';
 
 type Props = {
-  count: number;
-  color: string;
+  color?: string;
 };
 
-const CartButton = ({count, color = COLORS.BLACK1}: Props) => {
+const CartButton = ({color = COLORS.BLACK1}: Props) => {
   const navigation = useNavigation();
+  const cartdata = useAppSelector(cartSelector);
+  const count = cartdata.length;
   return (
     <Pressable onPress={() => navigation.navigate('Cart')}>
       <SimpleLineIcons color={color} size={25} name="handbag" />

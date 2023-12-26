@@ -13,7 +13,7 @@ type Props = {
   disabled?: boolean;
   style?: any;
   containerStyle?: object;
-  size: number;
+  size?: number;
   backgroundColor?: string;
   color?: string;
   iconStyle?: object;
