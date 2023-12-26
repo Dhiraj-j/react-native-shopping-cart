@@ -4,24 +4,16 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../theme/Screen';
 import {COLORS} from '../theme/Colors';
 import {FONTFAMILY, FONTSIZE} from '../theme/FontStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {useNavigation} from '@react-navigation/native';
+import CartButton from './CartButton';
 
 type Props = {};
 
 const HomeHeader = (props: Props) => {
-  const navigation = useNavigation();
-  console.log(props);
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.name}>Hey, Rahul</Text>
-        <Pressable onPress={() => navigation.navigate('Cart')}>
-          <SimpleLineIcons color={COLORS.BLACK1} size={25} name="handbag" />
-          <View style={styles.badgeCount}>
-            <Text>3</Text>
-          </View>
-        </Pressable>
+        <CartButton />
       </View>
       <View style={styles.searchBarContainer}>
         <Ionicons name={'search'} color={COLORS.BLACK1} size={25} />
@@ -34,16 +26,17 @@ const HomeHeader = (props: Props) => {
       <View style={styles.row}>
         <View>
           <Text style={styles.title}>Delivery to</Text>
-          <Text style={styles.details}>
-            Green Way 3000, Sylhet
-            <View>
-              <Ionicons name={'chevron-down-outline'} />
-            </View>
-          </Text>
+          <View style={styles.row}>
+            <Text style={styles.details}>Green Way 3000, Sylhet </Text>
+            <Ionicons name={'chevron-down-outline'} />
+          </View>
         </View>
         <View>
           <Text style={styles.title}>Within</Text>
-          <Text style={styles.details}>1 Hour</Text>
+          <View style={styles.row}>
+            <Text style={styles.details}>1 Hour </Text>
+            <Ionicons name={'chevron-down-outline'} />
+          </View>
         </View>
       </View>
     </View>
@@ -95,18 +88,5 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     paddingLeft: 10,
-  },
-  badgeCount: {
-    height: 25,
-    width: 25,
-    borderRadius: 15,
-    backgroundColor: COLORS.SECONDARY,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.PRIMARYTINT,
-    position: 'absolute',
-    right: -9,
-    top: -7,
   },
 });

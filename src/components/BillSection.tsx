@@ -3,27 +3,35 @@ import React from 'react';
 import {COLORS} from '../theme/Colors';
 import Button from './Button';
 import {FONTFAMILY, FONTSIZE} from '../theme/FontStyle';
+import {emptyCart} from '../store/cartSlice';
+import {useAppDispatch} from '../store/hooks';
 
-type Props = {};
+type Props = {
+  subtotal: number;
+};
 
 const BillSection = (props: Props) => {
+  const dispatch = useAppDispatch();
+  const handleCheckout = () => {
+    dispatch(emptyCart());
+  };
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
         <View style={styles.row}>
-          <Text style={styles.label}>BillSection</Text>
-          <Text style={styles.totalValue}>$37.96</Text>
+          <Text style={styles.label}>Subtotal</Text>
+          <Text style={styles.totalValue}>$ {props.subtotal}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>BillSection</Text>
-          <Text style={styles.totalValue}>$37.96</Text>
+          <Text style={styles.label}>Delivery</Text>
+          <Text style={styles.totalValue}>$2.00</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>BillSection</Text>
-          <Text style={styles.totalValue}>$37.96</Text>
+          <Text style={styles.label}>Total</Text>
+          <Text style={styles.totalValue}>${props.subtotal + 2}</Text>
         </View>
       </View>
-      <Button label="Proceed To checkout" />
+      <Button onPress={handleCheckout} label="Proceed To checkout" />
     </View>
   );
 };
@@ -33,11 +41,8 @@ export default BillSection;
 const styles = StyleSheet.create({
   container: {
     width: '95%',
+    alignSelf: 'center',
     backgroundColor: COLORS.BLACK1,
-    position: 'absolute',
-    bottom: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     padding: 10,
   },
   row: {

@@ -1,5 +1,12 @@
-import {BackHandler, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  BackHandler,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+} from 'react-native';
+import React, {FC, useEffect, useMemo} from 'react';
 import {FONTFAMILY, FONTSIZE} from '../theme/FontStyle';
 import {COLORS} from '../theme/Colors';
 import {SCREEN_WIDTH} from '../theme/Screen';
@@ -7,47 +14,80 @@ import Button from '../components/Button';
 import StarRating from '../components/StarRating';
 import ProductCarousel from '../components/ProductCarousel';
 import BackHeader from '../components/BackHeader';
-type Props = {};
+import {useRoute} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {productsSelector, toggleFavorite} from '../store/productSlice';
+import {add, cartSelector} from '../store/cartSlice';
 
-const imgString = '../assets/images/placeholder.png';
-const imgArray = [imgString, imgString, imgString];
-const Product = (props: Props) => {
+const Product = ({navigation}) => {
+  const route = useRoute();
+  const {id} = route.params;
+  const products = useAppSelector(productsSelector);
+  const singleProduct = products.filter(item => item.id === id)[0];
+  const {
+    title,
+    price,
+    discountPercentage,
+    description,
+    rating,
+    images,
+    favorite,
+  } = singleProduct;
+
+  const dispatch = useAppDispatch();
+  const handleFavorite = () => {
+    dispatch(toggleFavorite({productId: id}));
+  };
+  const handleAdd = () => {
+    dispatch(add(singleProduct));
+  };
+  const handleBuy = () => {
+    dispatch(add(singleProduct));
+    navigation.navigate('Cart');
+  };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <BackHeader />
       <View style={styles.paddingContainer}>
         <Text style={[styles.heading, {fontFamily: FONTFAMILY.manrope300}]}>
-          Thin Choise
+          {title}
         </Text>
-        <Text style={[styles.heading, {fontFamily: FONTFAMILY.manrope800}]}>
+        {/* <Text style={[styles.heading, {fontFamily: FONTFAMILY.manrope800}]}>
           Top Orange
-        </Text>
+        </Text> */}
         <View style={[styles.priceRow, {marginVertical: 10}]}>
-          <StarRating rating={2.5} />
-          <Text style={styles.desc}>110 Reviews</Text>
+          <StarRating rating={rating} />
+          <Text style={styles.desc}>{(rating * 100).toFixed(0)} Reviews</Text>
         </View>
       </View>
-      <ProductCarousel
-        width={SCREEN_WIDTH}
-        height={SCREEN_WIDTH * 0.6}
-        images={imgArray}
-      />
+      <View>
+        <ProductCarousel
+          width={SCREEN_WIDTH}
+          height={SCREEN_WIDTH * 0.6}
+          images={images}
+        />
+        <Pressable onPress={handleFavorite} style={styles.likeButton}>
+          <Ionicons
+            name={favorite ? 'heart' : 'heart-outline'}
+            color={favorite ? COLORS.RED : COLORS.BLACK100}
+            size={25}
+          />
+        </Pressable>
+      </View>
       <View style={styles.paddingContainer}>
         <View style={styles.priceRow}>
-          <Text style={styles.price}>$34.70/KG</Text>
-          <Text style={styles.discount}>$22.04 OFF</Text>
+          <Text style={styles.price}>${price}</Text>
+          <Text style={styles.discount}>{discountPercentage}% OFF</Text>
         </View>
         <View style={styles.buttonRow}>
-          <Button mode="outline" label="Add To Cart" />
-          <Button label="Buy Now" />
+          <Button onPress={handleAdd} mode="outline" label="Add To Cart" />
+          <Button onPress={handleBuy} label="Buy Now" />
         </View>
         <Text style={styles.detail}>Details</Text>
-        <Text style={styles.desc}>
-          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          Nullam quis risus eget urna mollis ornare vel eu leo.
-        </Text>
+        <Text style={styles.desc}>{description}</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -66,6 +106,15 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.h2 * 2,
     color: COLORS.GRAY3,
     lineHeight: FONTSIZE.h2 * 2.5,
+  },
+  likeButton: {
+    position: 'absolute',
+    zIndex: 10,
+    right: 20,
+    top: 20,
+    backgroundColor: COLORS.BG,
+    padding: 12,
+    borderRadius: 20,
   },
   priceRow: {
     flexDirection: 'row',

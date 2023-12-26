@@ -16,5 +16,6 @@ const COLORS = {
   PRIMARYTINT: '#2A4BA0',
   SECONDARY: '#F9B023',
   SECONDARYTINT: '#FFC83A',
+  RED: 'red',
 };
 export {COLORS};

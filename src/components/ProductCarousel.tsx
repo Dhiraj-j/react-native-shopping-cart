@@ -7,7 +7,6 @@ type Props = {
   width: number;
   height: number;
 };
-const imgString = '../assets/images/placeholder.png';
 const ProductCarousel = ({images, width, height}: Props) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const flatListRef = useRef<FlatList>(null);
@@ -46,7 +45,7 @@ const ProductCarousel = ({images, width, height}: Props) => {
         pagingEnabled
         renderItem={({item}) => (
           <View style={[styles.imageContainer, {width: width, height: height}]}>
-            <Image style={styles.image} source={require(imgString)} />
+            <Image style={styles.image} source={{uri: `${item}`}} />
           </View>
         )}
       />

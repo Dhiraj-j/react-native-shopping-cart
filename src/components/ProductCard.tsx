@@ -1,42 +1,51 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {SCREEN_WIDTH} from '../theme/Screen';
 import {COLORS} from '../theme/Colors';
-import ImgPlaceholder from '../assets/images/placeholder.png';
 import {FONTFAMILY, FONTSIZE} from '../theme/FontStyle';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import IconButton from './IconButton';
 import {useNavigation} from '@react-navigation/native';
-type Props = {
-  price: string;
-  title: string;
-  fav: boolean;
-  image: string;
-  id: string;
-};
+import {ProductType} from '../types/productType';
+import {useAppDispatch} from '../store/hooks';
+import {toggleFavorite} from '../store/productSlice';
+import {add} from '../store/cartSlice';
 
-const ProductCard = (props: Props) => {
+const ProductCard = (props: ProductType) => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+  const productId = props.id;
+  const handleFavorite = useCallback(() => {
+    dispatch(toggleFavorite({productId}));
+  }, [props.id]);
+  const handleAdd = useCallback(() => {
+    dispatch(add(props));
+  }, [props.id]);
+  console.log(props);
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <View style={styles.favIcon}>
-          <Pressable>
+          <Pressable onPress={handleFavorite} style={{zIndex: 10}}>
             <Ionicons
-              name={props.fav ? 'heart' : 'heart-outline'}
-              color={COLORS.BLACK100}
+              name={props.favorite ? 'heart' : 'heart-outline'}
+              color={props.favorite ? COLORS.RED : COLORS.BLACK100}
               size={25}
             />
           </Pressable>
         </View>
-        <Image style={styles.image} source={ImgPlaceholder} />
+        <Image style={styles.image} source={{uri: `${props.thumbnail}`}} />
       </View>
       <Pressable
-        onPress={() => navigation.navigate('Product')}
+        onPress={() => navigation.navigate('Product', props)}
         style={styles.details}>
-        <Text style={styles.price}>{props.price}</Text>
+        <Text style={styles.price}>${props.price}</Text>
         <Text style={styles.title}>{props.title}</Text>
-        <IconButton containerStyle={styles.addToCart} label="add" />
+        <IconButton
+          onPress={handleAdd}
+          containerStyle={styles.addToCart}
+          label="add"
+        />
       </Pressable>
     </View>
   );

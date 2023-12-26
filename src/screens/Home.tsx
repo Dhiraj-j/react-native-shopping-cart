@@ -1,43 +1,70 @@
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../theme/Colors';
-import {FONTSIZE} from '../theme/FontStyle';
-import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
-import products from '../mockData/products';
 import OfferCard from '../components/OfferCard';
 import HomeHeader from '../components/HomeHeader';
 import {SCREEN_WIDTH} from '../theme/Screen';
+import axios from 'axios';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {productsSelector, setProducts} from '../store/productSlice';
 
-type Props = {};
+const Home = () => {
+  const products = useAppSelector(productsSelector);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  //fetching API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://dummyjson.com/products');
+        dispatch(setProducts(response.data.products));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
 
-const Home = (props: Props) => {
+    fetchProducts();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <FlatList
-        ListHeaderComponent={
-          <View style={{width: SCREEN_WIDTH}}>
-            <HomeHeader />
-            <ScrollView
-              contentContainerStyle={{
-                marginVertical: 10,
-                columnGap: 15,
-                paddingHorizontal: 10,
-              }}
-              showsHorizontalScrollIndicator={false}
-              horizontal>
-              <OfferCard />
-              <OfferCard />
-              <OfferCard />
-            </ScrollView>
-          </View>
-        }
-        numColumns={2}
-        columnWrapperStyle={{columnGap: 15}}
-        contentContainerStyle={{width: SCREEN_WIDTH, alignItems: 'center'}}
-        data={products}
-        renderItem={({item}) => <ProductCard {...item} key={item} />}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+      ) : (
+        <FlatList
+          ListHeaderComponent={
+            <View style={{width: SCREEN_WIDTH}}>
+              <HomeHeader />
+              <ScrollView
+                contentContainerStyle={{
+                  marginVertical: 10,
+                  columnGap: 15,
+                  paddingHorizontal: 10,
+                }}
+                showsHorizontalScrollIndicator={false}
+                horizontal>
+                <OfferCard />
+                <OfferCard />
+              </ScrollView>
+            </View>
+          }
+          numColumns={2}
+          columnWrapperStyle={{columnGap: 15}}
+          contentContainerStyle={{width: SCREEN_WIDTH, alignItems: 'center'}}
+          data={products}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => <ProductCard {...item} key={item.id} />}
+        />
+      )}
     </View>
   );
 };

@@ -4,9 +4,14 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 import Product from '../screens/Product';
 import Cart from '../screens/Cart';
+import {ProductType} from '../types/productType';
 
-type Props = {};
-const {Screen, Navigator} = createNativeStackNavigator();
+export type RootStackParamList = {
+  BottomTab: undefined;
+  Product: undefined;
+  Cart: undefined;
+};
+const {Screen, Navigator} = createNativeStackNavigator<RootStackParamList>();
 
 const RouteNavigation = (props: Props) => {
   return (

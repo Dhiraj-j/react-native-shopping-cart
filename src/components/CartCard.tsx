@@ -1,36 +1,42 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {FONTFAMILY, FONTSIZE} from '../theme/FontStyle';
 import {COLORS} from '../theme/Colors';
 import IconButton from './IconButton';
+import {useAppDispatch} from '../store/hooks';
+import {Cart, add, remove} from '../store/cartSlice';
 
-type Props = {};
-
-const CartCard = (props: Props) => {
+const CartCard = (props: Cart) => {
+  const dispatch = useAppDispatch();
+  const handleAdd = () => {
+    dispatch(add(props));
+  };
+  const handleRemove = () => {
+    dispatch(remove(props));
+  };
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require('../assets/images/placeholder.png')}
-        />
+        <Image style={styles.image} source={{uri: `${props.thumbnail}`}} />
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Bananas</Text>
+        <Text style={styles.label}>{props.title}</Text>
         <Text style={[styles.label, {fontFamily: FONTFAMILY.manrope400}]}>
-          $7.90
+          ${props.price}
         </Text>
       </View>
       <View style={styles.quantityContainer}>
         <IconButton
+          onPress={handleRemove}
           backgroundColor={COLORS.BLACK1}
           color={COLORS.GRAY4}
           label="remove"
           iconStyle={{padding: 5}}
           size={25}
         />
-        <Text style={styles.label}>1</Text>
+        <Text style={styles.label}>{props.quantity}</Text>
         <IconButton
+          onPress={handleAdd}
           backgroundColor={COLORS.BLACK1}
           color={COLORS.GRAY4}
           label="add"
