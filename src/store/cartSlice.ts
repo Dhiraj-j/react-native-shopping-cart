@@ -28,8 +28,9 @@ export const cartSlice = createSlice({
         const newCart = state.filter(
           product => product.id !== action.payload.id,
         );
-        state = newCart;
-        return;
+        console.log(newCart, 'newcart');
+
+        return [...newCart];
       }
       if (index !== -1 && state[index].quantity > 1) {
         state[index].quantity -= 1;
@@ -37,7 +38,7 @@ export const cartSlice = createSlice({
       }
     },
     emptyCart(state) {
-      state = [];
+      state.splice(0, state.length);
     },
   },
 });
